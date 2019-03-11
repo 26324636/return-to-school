@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>网络1502寒假返校时间统计</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<script type="text/javascript" src="js/jquery.js" ></script>
+		<script src="js/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+	</head>
+
+	<body>
+		<div class="wrap flex-c-c" style="position: relative;">
+			<ul class="select__list">
+				<li id="login" class="select__label select__label--active">网络1502寒假返校登记</li>
+			</ul>
+			<span class="pointer" style="right: 0em !important;"></span>
+			<input type="text" placeholder="学号" class="ui-field " id="userid"/>
+			<input type="text" placeholder="学生姓名" class="ui-field" id="username" />
+			<input type="text" placeholder="有效联系方式（长号）" class="ui-field" id="phone" />
+			<input type="text" placeholder="返校时间（例：3月2日14时）" class="ui-field" id="return_time" />
+			<button id="btn" class="ui-button">提交</button>
+		</div>
+		<div class="footer" style="">
+			©疯鸟网络工作室 2016-2018 
+			
+		</div>
+		
+
+		<script type="text/javascript" src="js/castapp.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript">
+			var btn = document.getElementById('btn');
+			btn.addEventListener('click', function() {
+				//alert(1);
+				var userid = document.getElementById('userid');
+				var username = document.getElementById('username');
+				var phone = document.getElementById('phone');
+				var return_time = document.getElementById('return_time');
+				if(userid.value.indexOf('0413150') == -1 ||userid.value.length != 10) {
+					alert('学号格式不正确，请重新输入');
+				} else if(username.value == ''){
+					alert('姓名格式不正确，请重新输入');
+				}else if(phone.value.length != 11){
+					alert('手机格式不正确，请重新输入');
+				} else if(return_time.value.indexOf('月') == -1 || return_time.value.indexOf('日') == -1 || return_time.value.indexOf('时') == -1){
+					alert('返校时间格式不正确，请重新输入');
+				} else {
+					$.ajax({
+						type: "get",
+						dataType: "text",
+						url: "http://182.254.155.100/class/index.php/User/return_school",
+						data: {
+							userid_data: userid.value,
+							username_data: username.value,
+							phone_data: phone.value,
+							return_time_data: return_time.value
+						},
+						async: true,
+						success: function(data) {
+							alert(data);
+							if(data == -1){
+								alert('该学号已经提交过,请勿重新提交');
+							}else if(data > 0){
+								alert('提交成功');
+							}else{
+								alert('提交失败，请联系管理员');
+							}
+						}
+					});
+				}
+			});
+		</script>
+	</body>
+
+</html>

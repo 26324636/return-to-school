@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>网络1502返校登记管理界面</title>
+
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<style>
+			.page td{
+				text-align: center;
+				background: #fff !important;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-3" style="padding:0.5em 0;">
+					<button type="button" class="btn btn-success btn-block" id="generate-excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> 下载Excel</button>
+					<div style="display: block;margin: 20px 20px 0px 20px">
+					<span style="font-weight:bolder">注：下载的学号前面格式是会去0的，只需选中学号一列——设置单元格格式——自定义——输入</span><span style="color: red;font-weight: bolder;"> "0"@ </span><span style="font-weight:bolder">即可</span>
+					</div>
+					<hr>
+					<div style="display: block;margin-left: 20px">
+					<span style="font-weight:bolder;">当前总人数：</span><span style="font-weight:bolder" class="all_num"></span>
+					</div>
+					<hr>
+				</div>
+				<div class="col-md-12" style="padding:2em 0;margin-top: -50px;margin-left: 20px;margin-right: 20px;">
+					<div class="table-responsive">
+						<table class="table table-bordered table-striped" id="test_table">
+							<thead>
+								<tr style="background: #f9f9f9 !important;text-align: center;">
+									<td>学号</td>
+									<td>姓名</td>
+									<td>有效联系方式</td>
+									<td>返校时间</td>
+								</tr>
+							</thead>
+							<tbody class="page" >
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footer" style="bottom: 0;width: 100%;height: 20px;text-align: center;background-color: darkgrey;color: white;font-family: "微软雅黑";">
+			©疯鸟网络工作室 2016-2018 Effort
+			
+		</div>
+		<script type="text/javascript" src="js/jquery-1.8.2.js"></script>
+		<script type="text/javascript" src="js/jszip.js"></script>
+		<script type="text/javascript" src="js/FileSaver.js"></script>
+		<script type="text/javascript" src="js/excel-gen.js"></script>
+		<script type="text/javascript" src="js/demo.page.js"></script>
+		<script type="text/javascript" src="js/castapp.js" ></script>
+		<script type="text/javascript" src="js/jquery.js" ></script>
+		<script type="text/javascript">
+			var page = document.getElementsByClassName('page');
+			$.ajax({
+				type: "get",
+				url: "http://182.254.155.100/class/index.php/User/user_show",
+				data: {},
+				async: true,
+				dataType: "text",
+				success: function(data) {
+					
+					//console.log(data);
+					//data = data.replaceAll(""+(char)65279,"")
+
+					//console.log(data.charCodeAt(0)+","+data.charCodeAt(1)+","+data.charCodeAt(2));
+					//data = data.substring(1); 
+					//console.log(data);
+					json = JSON.parse(data);
+					for(var a in json){
+						page[0].innerHTML+='<tr>'
+							+		'<td>'
+							+			'<span>' + json[a].userid +'</span>'
+							+		'</td>'
+							+		'<td>'
+							+			'<span>' +json[a].username +'</span>'
+							+		'</td>'
+							+		'<td>'
+							+			'<span>' + json[a].phone +'</span>'
+							+		'</td>'
+							+		'<td>'
+							+			'<span>' +json[a].time +'</span>'
+							+		'</td>'
+							+	'</tr>';
+					}
+					$(document).ready(function () {
+					    excel = new ExcelGen({
+					        "src_id": "test_table",
+					        "show_header": true
+					    });
+					    $("#generate-excel").click(function () {
+					        excel.generate();
+					    });
+					});
+				}
+			});
+			
+			var all_num = document.getElementsByClassName('all_num');
+			$.ajax({
+				type: "get",
+				url: "http://182.254.155.100/class/index.php/User/user_num",
+				data: {},
+				async: true,
+				dataType: "text",
+				success: function(data) {
+					//alert(data);
+					all_num[0].innerHTML = data;
+					
+				}
+			});
+			
+			
+		</script>
+	</body>
+
+</html>
